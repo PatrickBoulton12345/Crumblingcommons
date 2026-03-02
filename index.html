@@ -983,7 +983,7 @@ Parliament API data — only stances will be "unknown".
 
   <!-- ===== HERO ===== -->
   <header id="hero" role="banner">
-    <video class="hero-video" autoplay muted loop playsinline>
+    <video class="hero-video" autoplay muted loop playsinline webkit-playsinline poster="hero-poster.jpg">
       <source src="hero-video.mp4" type="video/mp4" />
     </video>
     <div class="hero-overlay"></div>
@@ -1889,6 +1889,24 @@ Parliament API data — only stances will be "unknown".
   // ============================================================
 
   document.addEventListener('DOMContentLoaded', function() {
+    // Force hero video autoplay on mobile
+    var heroVideo = document.querySelector('.hero-video');
+    if (heroVideo) {
+      heroVideo.muted = true;
+      var playAttempt = heroVideo.play();
+      if (playAttempt !== undefined) {
+        playAttempt.catch(function() {
+          // Autoplay blocked — retry on first user interaction
+          var events = ['touchstart', 'scroll', 'click'];
+          function tryPlay() {
+            heroVideo.play();
+            events.forEach(function(e) { document.removeEventListener(e, tryPlay); });
+          }
+          events.forEach(function(e) { document.addEventListener(e, tryPlay, { once: true, passive: true }); });
+        });
+      }
+    }
+
     // Start map immediately (it can render grey until data arrives)
     requestAnimationFrame(function() {
       setTimeout(function() {
