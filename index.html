@@ -1299,6 +1299,7 @@ data — stances will default to "unknown".
           </div>
           <span class="slide-gap"></span>
           <span class="slide-number text-fill-red" id="s4-line2" style="font-size: clamp(60px, 10vw, 100px);">60 Notre Dames.</span>
+          <div class="slide-subheading text-fill-white" id="s4-line3" style="margin-top: 12px;">For <u>one</u> Parliament.</div>
           <!-- Grid of 60 icons injected by JS -->
           <div class="notre-dame-grid" id="notre-dame-grid" aria-hidden="true"></div>
         </div>
@@ -2305,6 +2306,7 @@ data — stances will default to "unknown".
     // Slide 4 fill lines
     var s4line1 = document.getElementById('s4-line1');
     var s4line2 = document.getElementById('s4-line2');
+    var s4line3 = document.getElementById('s4-line3');
 
     // Slide 5 fill lines
     var s5line1 = document.getElementById('s5-line1');
@@ -2456,8 +2458,9 @@ data — stances will default to "unknown".
 
           // Slide 4 text fill (57%–70%)
           var f4 = rangeFade(p, 0.57, 0.70);
-          if (s4line1) s4line1.style.backgroundSize = clamp(f4 / 0.45, 0, 1) * 100 + '% 100%';
-          if (s4line2) s4line2.style.backgroundSize = clamp((f4 - 0.35) / 0.45, 0, 1) * 100 + '% 100%';
+          if (s4line1) s4line1.style.backgroundSize = clamp(f4 / 0.40, 0, 1) * 100 + '% 100%';
+          if (s4line2) s4line2.style.backgroundSize = clamp((f4 - 0.30) / 0.35, 0, 1) * 100 + '% 100%';
+          if (s4line3) s4line3.style.backgroundSize = clamp((f4 - 0.60) / 0.35, 0, 1) * 100 + '% 100%';
 
           // Slide 4: reveal all icons at once when slide appears
           if (ndIcons.length) {
