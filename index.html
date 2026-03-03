@@ -290,14 +290,20 @@ Parliament API data — only stances will be "unknown".
       cursor: wait;
     }
 
-    /* ===== HERO ===== */
-    #hero {
+    /* ===== HERO + SCROLL REVEAL WRAPPER ===== */
+    #hero-wrapper {
       position: relative;
+      height: 350vh; /* total scroll distance for both hero + reveal */
+      background: #000;
+    }
+
+    #hero {
+      position: sticky;
+      top: 0;
+      height: 100vh;
       overflow: hidden;
-      min-height: 85vh;
       display: flex;
       align-items: center;
-      border-bottom: 1px solid var(--border);
     }
 
     .hero-video {
@@ -307,6 +313,7 @@ Parliament API data — only stances will be "unknown".
       height: 100%;
       object-fit: cover;
       z-index: 0;
+      transition: opacity 0.1s linear;
     }
 
     .hero-mobile-bg {
@@ -318,6 +325,19 @@ Parliament API data — only stances will be "unknown".
       object-fit: cover;
       object-position: right center;
       z-index: 0;
+      transition: opacity 0.1s linear;
+    }
+
+    .hero-bw-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      z-index: 0;
+      opacity: 0;
+      transition: opacity 0.1s linear;
     }
 
     .hero-overlay {
@@ -340,6 +360,7 @@ Parliament API data — only stances will be "unknown".
       padding: 80px 48px;
       width: 100%;
       text-align: left;
+      transition: opacity 0.1s linear;
     }
 
     .hero-eyebrow {
@@ -377,50 +398,26 @@ Parliament API data — only stances will be "unknown".
       line-height: 1.6;
     }
 
-    /* ===== SCROLL REVEAL SECTION ===== */
-    #scroll-reveal {
-      position: relative;
-      height: 250vh; /* tall to give scroll room */
-      background: #000;
-    }
-
-    .scroll-reveal-sticky {
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-    }
-
-    .scroll-reveal-bg {
-      position: absolute;
-      inset: 0;
-      background-image: url('parliament-bw.png');
-      background-size: cover;
-      background-position: center;
-      z-index: 0;
-    }
-
-    .scroll-reveal-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        to right,
-        rgba(0, 0, 0, 0.88) 0%,
-        rgba(0, 0, 0, 0.65) 45%,
-        rgba(0, 0, 0, 0.15) 100%
-      );
-      z-index: 1;
-    }
-
+    /* ===== SCROLL REVEAL CONTENT ===== */
     .scroll-reveal-content {
-      position: relative;
+      position: absolute;
+      inset: 0;
       z-index: 2;
       max-width: 1080px;
       margin: 0 auto;
       padding: 0 48px;
       width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.1s linear;
+      pointer-events: none;
+    }
+
+    .scroll-reveal-content.visible {
+      opacity: 1;
+      pointer-events: auto;
     }
 
     .scroll-reveal-line {
@@ -1005,21 +1002,11 @@ Parliament API data — only stances will be "unknown".
     @media (max-width: 768px) {
       section { padding: 48px 0; }
 
-      #hero { min-height: 70vh; }
+      #hero-wrapper { height: 300vh; }
       .hero-content { padding: 60px 24px; }
       .hero-video { display: none; }
       .hero-mobile-bg { display: block; }
-
-      #scroll-reveal { height: 200vh; }
       .scroll-reveal-content { padding: 0 24px; }
-      .scroll-reveal-overlay {
-        background: linear-gradient(
-          to right,
-          rgba(0, 0, 0, 0.92) 0%,
-          rgba(0, 0, 0, 0.8) 60%,
-          rgba(0, 0, 0, 0.3) 100%
-        );
-      }
       .hero-overlay {
         background: linear-gradient(
           to right,
@@ -1089,34 +1076,35 @@ Parliament API data — only stances will be "unknown".
     Demo Mode — Parliament API unavailable. Showing sample data only.
   </div>
 
-  <!-- ===== HERO ===== -->
-  <header id="hero" role="banner">
-    <video class="hero-video" autoplay muted loop playsinline webkit-playsinline poster="hero-poster.jpg">
-      <source src="hero-video.mp4" type="video/mp4" />
-    </video>
-    <img class="hero-mobile-bg" src="hero-mobile.webp" alt="" role="presentation" />
-    <div class="hero-overlay"></div>
-    <div class="hero-content">
-      <div class="hero-eyebrow">A civic accountability tracker</div>
-      <h1>Crumbling<span>Commons</span></h1>
-      <p class="hero-subtitle">
-        Tracking Parliamentary support for restoring the Palace of Westminster —
-        the seat of British democracy — before it's too late.
-      </p>
-    </div>
-  </header>
-
-  <!-- ===== SCROLL REVEAL ===== -->
-  <div id="scroll-reveal">
-    <div class="scroll-reveal-sticky">
-      <div class="scroll-reveal-bg"></div>
-      <div class="scroll-reveal-overlay"></div>
-      <div class="scroll-reveal-content">
+  <!-- ===== HERO + SCROLL REVEAL ===== -->
+  <div id="hero-wrapper">
+    <header id="hero" role="banner">
+      <!-- Video background (desktop) -->
+      <video class="hero-video" id="hero-video" autoplay muted loop playsinline webkit-playsinline poster="hero-poster.jpg">
+        <source src="hero-video.mp4" type="video/mp4" />
+      </video>
+      <!-- Animated WebP background (mobile) -->
+      <img class="hero-mobile-bg" src="hero-mobile.webp" alt="" role="presentation" />
+      <!-- B&W Parliament (fades in on scroll) -->
+      <img class="hero-bw-bg" id="hero-bw" src="parliament-bw.png" alt="" role="presentation" />
+      <!-- Overlay -->
+      <div class="hero-overlay"></div>
+      <!-- Hero text (fades out on scroll) -->
+      <div class="hero-content" id="hero-content">
+        <div class="hero-eyebrow">A civic accountability tracker</div>
+        <h1>Crumbling<span>Commons</span></h1>
+        <p class="hero-subtitle">
+          Tracking Parliamentary support for restoring the Palace of Westminster —
+          the seat of British democracy — before it's too late.
+        </p>
+      </div>
+      <!-- Reveal text (fades in on scroll) -->
+      <div class="scroll-reveal-content" id="scroll-reveal-content">
         <div class="scroll-reveal-line" id="reveal-line-1">Parliament is crumbling.</div>
         <div class="scroll-reveal-line line-cost" id="reveal-line-2">It might cost £40bn to repair.</div>
         <div class="scroll-reveal-response" id="reveal-line-3">We don't think so.</div>
       </div>
-    </div>
+    </header>
   </div>
 
   <!-- ===== STAT COUNTER ===== -->
@@ -2012,16 +2000,15 @@ Parliament API data — only stances will be "unknown".
 
   document.addEventListener('DOMContentLoaded', function() {
     // Force hero video autoplay on mobile
-    var heroVideo = document.querySelector('.hero-video');
-    if (heroVideo) {
-      heroVideo.muted = true;
-      var playAttempt = heroVideo.play();
+    var vid = document.getElementById('hero-video');
+    if (vid) {
+      vid.muted = true;
+      var playAttempt = vid.play();
       if (playAttempt !== undefined) {
         playAttempt.catch(function() {
-          // Autoplay blocked — retry on first user interaction
           var events = ['touchstart', 'scroll', 'click'];
           function tryPlay() {
-            heroVideo.play();
+            vid.play().catch(function(){});
             events.forEach(function(e) { document.removeEventListener(e, tryPlay); });
           }
           events.forEach(function(e) { document.addEventListener(e, tryPlay, { once: true, passive: true }); });
@@ -2040,32 +2027,66 @@ Parliament API data — only stances will be "unknown".
     // Load Parliament API data + Sheet stances in parallel with map init
     loadAllData();
 
-    // ===== SCROLL REVEAL TEXT FILL =====
-    var scrollReveal = document.getElementById('scroll-reveal');
+    // ===== SCROLL: VIDEO → B&W CROSSFADE + TEXT REVEAL =====
+    var heroWrapper = document.getElementById('hero-wrapper');
+    var heroVideo = document.getElementById('hero-video');
+    var heroMobileBg = document.querySelector('.hero-mobile-bg');
+    var heroBw = document.getElementById('hero-bw');
+    var heroContent = document.getElementById('hero-content');
+    var revealContent = document.getElementById('scroll-reveal-content');
     var revealLine1 = document.getElementById('reveal-line-1');
     var revealLine2 = document.getElementById('reveal-line-2');
     var revealLine3 = document.getElementById('reveal-line-3');
 
-    if (scrollReveal && revealLine1 && revealLine2 && revealLine3) {
+    if (heroWrapper) {
       var ticking = false;
       window.addEventListener('scroll', function() {
         if (!ticking) {
           requestAnimationFrame(function() {
-            var rect = scrollReveal.getBoundingClientRect();
-            var sectionHeight = scrollReveal.offsetHeight;
-            var scrolled = -rect.top; // how far into the section
-            var progress = Math.max(0, Math.min(1, scrolled / (sectionHeight - window.innerHeight)));
+            var rect = heroWrapper.getBoundingClientRect();
+            var totalScroll = heroWrapper.offsetHeight - window.innerHeight;
+            var scrolled = -rect.top;
+            var progress = Math.max(0, Math.min(1, scrolled / totalScroll));
 
-            // Line 1 fills 0% → 40% of scroll
-            var p1 = Math.max(0, Math.min(1, progress / 0.4));
+            // Phase 1 (0-30%): Video fades out, B&W fades in, hero text fades out
+            var fadeProgress = Math.max(0, Math.min(1, progress / 0.3));
+            var videoOpacity = 1 - fadeProgress;
+            var bwOpacity = fadeProgress;
+            var heroTextOpacity = 1 - fadeProgress;
+
+            if (heroVideo) heroVideo.style.opacity = videoOpacity;
+            if (heroMobileBg) heroMobileBg.style.opacity = videoOpacity;
+            if (heroBw) heroBw.style.opacity = bwOpacity;
+            if (heroContent) heroContent.style.opacity = heroTextOpacity;
+
+            // Pause video when fully faded out, resume when visible
+            if (heroVideo) {
+              if (fadeProgress >= 1 && !heroVideo.paused) heroVideo.pause();
+              if (fadeProgress < 1 && heroVideo.paused) heroVideo.play().catch(function(){});
+            }
+
+            // Phase 2 (25-100%): Reveal text appears and fills with colour
+            var revealVisible = Math.max(0, Math.min(1, (progress - 0.2) / 0.15));
+            if (revealContent) revealContent.style.opacity = revealVisible;
+            if (revealVisible > 0) {
+              revealContent.classList.add('visible');
+            } else {
+              revealContent.classList.remove('visible');
+            }
+
+            // Text fill (within the 30%-100% range)
+            var fillBase = Math.max(0, Math.min(1, (progress - 0.3) / 0.7));
+
+            // Line 1 fills 0% → 45% of fill range
+            var p1 = Math.max(0, Math.min(1, fillBase / 0.45));
             revealLine1.style.backgroundSize = (p1 * 100) + '% 100%';
 
-            // Line 2 fills 25% → 60% of scroll
-            var p2 = Math.max(0, Math.min(1, (progress - 0.25) / 0.35));
+            // Line 2 fills 30% → 65% of fill range
+            var p2 = Math.max(0, Math.min(1, (fillBase - 0.3) / 0.35));
             revealLine2.style.backgroundSize = (p2 * 100) + '% 100%';
 
-            // Line 3 fills 55% → 90% of scroll
-            var p3 = Math.max(0, Math.min(1, (progress - 0.55) / 0.35));
+            // Line 3 fills 55% → 90% of fill range
+            var p3 = Math.max(0, Math.min(1, (fillBase - 0.55) / 0.35));
             revealLine3.style.backgroundSize = (p3 * 100) + '% 100%';
 
             ticking = false;
