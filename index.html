@@ -377,6 +377,90 @@ Parliament API data — only stances will be "unknown".
       line-height: 1.6;
     }
 
+    /* ===== SCROLL REVEAL SECTION ===== */
+    #scroll-reveal {
+      position: relative;
+      height: 250vh; /* tall to give scroll room */
+      background: #000;
+    }
+
+    .scroll-reveal-sticky {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+    }
+
+    .scroll-reveal-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('parliament-bw.png');
+      background-size: cover;
+      background-position: center;
+      z-index: 0;
+    }
+
+    .scroll-reveal-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to right,
+        rgba(0, 0, 0, 0.88) 0%,
+        rgba(0, 0, 0, 0.65) 45%,
+        rgba(0, 0, 0, 0.15) 100%
+      );
+      z-index: 1;
+    }
+
+    .scroll-reveal-content {
+      position: relative;
+      z-index: 2;
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 48px;
+      width: 100%;
+    }
+
+    .scroll-reveal-line {
+      font-family: var(--font-octarine);
+      font-weight: 700;
+      font-size: clamp(32px, 6vw, 64px);
+      line-height: 1.15;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      color: #333; /* dark base — "unfilled" state */
+      background-image: linear-gradient(to right, var(--accent-red), var(--accent-red));
+      background-repeat: no-repeat;
+      background-size: 0% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      transition: none; /* driven by JS */
+      max-width: 600px;
+    }
+
+    .scroll-reveal-line.line-cost {
+      margin-bottom: 40px;
+    }
+
+    .scroll-reveal-response {
+      font-family: var(--font-octarine);
+      font-weight: 700;
+      font-size: clamp(40px, 8vw, 80px);
+      line-height: 1.05;
+      text-transform: uppercase;
+      color: #222;
+      background-image: linear-gradient(to right, #ffffff, #ffffff);
+      background-repeat: no-repeat;
+      background-size: 0% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      max-width: 600px;
+    }
+
     /* ===== CONTAINER ===== */
     .container {
       max-width: 1080px;
@@ -925,6 +1009,17 @@ Parliament API data — only stances will be "unknown".
       .hero-content { padding: 60px 24px; }
       .hero-video { display: none; }
       .hero-mobile-bg { display: block; }
+
+      #scroll-reveal { height: 200vh; }
+      .scroll-reveal-content { padding: 0 24px; }
+      .scroll-reveal-overlay {
+        background: linear-gradient(
+          to right,
+          rgba(0, 0, 0, 0.92) 0%,
+          rgba(0, 0, 0, 0.8) 60%,
+          rgba(0, 0, 0, 0.3) 100%
+        );
+      }
       .hero-overlay {
         background: linear-gradient(
           to right,
@@ -1010,6 +1105,19 @@ Parliament API data — only stances will be "unknown".
       </p>
     </div>
   </header>
+
+  <!-- ===== SCROLL REVEAL ===== -->
+  <div id="scroll-reveal">
+    <div class="scroll-reveal-sticky">
+      <div class="scroll-reveal-bg"></div>
+      <div class="scroll-reveal-overlay"></div>
+      <div class="scroll-reveal-content">
+        <div class="scroll-reveal-line" id="reveal-line-1">Parliament is crumbling.</div>
+        <div class="scroll-reveal-line line-cost" id="reveal-line-2">It might cost £40bn to repair.</div>
+        <div class="scroll-reveal-response" id="reveal-line-3">We don't think so.</div>
+      </div>
+    </div>
+  </div>
 
   <!-- ===== STAT COUNTER ===== -->
   <section id="stats" aria-label="MP support statistics">
@@ -1931,6 +2039,41 @@ Parliament API data — only stances will be "unknown".
 
     // Load Parliament API data + Sheet stances in parallel with map init
     loadAllData();
+
+    // ===== SCROLL REVEAL TEXT FILL =====
+    var scrollReveal = document.getElementById('scroll-reveal');
+    var revealLine1 = document.getElementById('reveal-line-1');
+    var revealLine2 = document.getElementById('reveal-line-2');
+    var revealLine3 = document.getElementById('reveal-line-3');
+
+    if (scrollReveal && revealLine1 && revealLine2 && revealLine3) {
+      var ticking = false;
+      window.addEventListener('scroll', function() {
+        if (!ticking) {
+          requestAnimationFrame(function() {
+            var rect = scrollReveal.getBoundingClientRect();
+            var sectionHeight = scrollReveal.offsetHeight;
+            var scrolled = -rect.top; // how far into the section
+            var progress = Math.max(0, Math.min(1, scrolled / (sectionHeight - window.innerHeight)));
+
+            // Line 1 fills 0% → 40% of scroll
+            var p1 = Math.max(0, Math.min(1, progress / 0.4));
+            revealLine1.style.backgroundSize = (p1 * 100) + '% 100%';
+
+            // Line 2 fills 25% → 60% of scroll
+            var p2 = Math.max(0, Math.min(1, (progress - 0.25) / 0.35));
+            revealLine2.style.backgroundSize = (p2 * 100) + '% 100%';
+
+            // Line 3 fills 55% → 90% of scroll
+            var p3 = Math.max(0, Math.min(1, (progress - 0.55) / 0.35));
+            revealLine3.style.backgroundSize = (p3 * 100) + '% 100%';
+
+            ticking = false;
+          });
+          ticking = true;
+        }
+      }, { passive: true });
+    }
   });
 
   window.addEventListener('resize', function() {
