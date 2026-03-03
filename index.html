@@ -2134,7 +2134,9 @@ data — stances will default to "unknown".
       }
 
       const result    = json.result;
-      const constName = result.parliamentary_constituency_2024 || '';
+      const constName = result.parliamentary_constituency_2024
+                     || result.parliamentary_constituency
+                     || '';
 
       if (!constName) {
         errorEl.textContent = 'Could not determine constituency for this postcode.';
