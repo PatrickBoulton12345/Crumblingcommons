@@ -10,25 +10,17 @@ HOW THIS WORKS:
 - The map and results panel are populated from live Parliament data.
 - All 650 MPs are fetched in paginated requests (33 pages of 20).
 
-OPTIONAL — GOOGLE SHEETS SETUP FOR MP STANCES:
-If you want to track which MPs support / oppose restoration:
-1. Go to https://sheets.google.com and create a new spreadsheet.
-2. Name the first tab "Sheet1" (or update SHEET_NAME below).
-3. Add column headers in row 1:
-     A: (anything — ignored)
-     B: constituency_name   (e.g. "Aldershot" — must match Parliament API membershipFrom exactly)
-     C: (anything — ignored)
-     D: (anything — ignored)
-     E: stance              (must be exactly: supports / opposes / unknown)
-     F: mp_email            (optional — overrides Parliament API contact lookup)
-4. Fill in rows for constituencies you have stance data for.
-5. Go to https://console.cloud.google.com — create a project, enable the
-   Google Sheets API, create an API key (restrict to Sheets API).
-6. Paste your Sheet ID (from the URL: /spreadsheets/d/SHEET_ID/edit) and
-   API key into the CONFIGURATION section in the JS below.
+GOOGLE SHEETS — MP STANCES:
+Connected to Google Sheet "UK MPs" with columns:
+  A: Constituency (must match Parliament API membershipFrom exactly)
+  B: MP Name
+  C: Support? (Y = supports, N = opposes, blank = unknown)
 
-If no sheet is configured (or it fails), all MPs still show with their
-Parliament API data — only stances will be "unknown".
+Sheet ID: 1GKgMwE6Tdq5hBBB-S3h-U8HWg2QU4FZOq62VXtKVHP0
+Tab: "UK MPs"
+
+If the sheet fetch fails, all MPs still show with their Parliament API
+data — stances will default to "unknown".
 =======================================================================
 -->
 <html lang="en">
@@ -1571,13 +1563,12 @@ Parliament API data — only stances will be "unknown".
   // ============================================================
   // CONFIGURATION
   // ============================================================
-  // Google Sheet for MP stances ONLY (optional).
-  // Columns: A (ignored), B: constituency_name, C (ignored), D (ignored),
-  //          E: stance (supports/opposes/unknown), F: mp_email (optional override)
-  // If not configured, all MPs default to "unknown" stance but full Parliament data still loads.
-  const GOOGLE_SHEETS_API_KEY = 'YOUR_API_KEY_HERE';
-  const GOOGLE_SHEET_ID       = 'YOUR_SHEET_ID_HERE';
-  const SHEET_NAME            = 'Sheet1';
+  // Google Sheet for MP stances.
+  // Columns: A: Constituency, B: MP Name, C: Support? (Y/N)
+  // If not configured, all MPs default to "unknown" stance.
+  const GOOGLE_SHEETS_API_KEY = 'AIzaSyC52PrXrCwA-1tLaVtCtMlkeGHJvKbKmjw';
+  const GOOGLE_SHEET_ID       = '1GKgMwE6Tdq5hBBB-S3h-U8HWg2QU4FZOq62VXtKVHP0';
+  const SHEET_NAME            = 'UK MPs';
   // ============================================================
 
   // ============================================================
@@ -1702,14 +1693,16 @@ Parliament API data — only stances will be "unknown".
 
       const overrides = {};
       for (const row of rows) {
-        // Columns: A (0), B constituency_name (1), C (2), D (3), E stance (4), F mp_email (5)
-        const constName = (row[1] || '').trim();
-        const stanceRaw = (row[4] || '').trim().toLowerCase();
-        const email     = (row[5] || '').trim();
+        // Columns: A: Constituency (0), B: MP Name (1), C: Support? Y/N (2)
+        const constName = (row[0] || '').trim();
+        const supportRaw = (row[2] || '').trim().toUpperCase();
         if (!constName) continue;
+        var stance = 'unknown';
+        if (supportRaw === 'Y') stance = 'supports';
+        else if (supportRaw === 'N') stance = 'opposes';
         overrides[constName] = {
-          stance:   ['supports', 'opposes'].includes(stanceRaw) ? stanceRaw : 'unknown',
-          mp_email: email,
+          stance:   stance,
+          mp_email: '',
         };
       }
       return overrides;
