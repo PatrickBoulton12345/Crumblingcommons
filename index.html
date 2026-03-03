@@ -309,6 +309,16 @@ Parliament API data — only stances will be "unknown".
       z-index: 0;
     }
 
+    .hero-mobile-bg {
+      display: none;
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+
     .hero-overlay {
       position: absolute;
       inset: 0;
@@ -912,6 +922,8 @@ Parliament API data — only stances will be "unknown".
 
       #hero { min-height: 70vh; }
       .hero-content { padding: 60px 24px; }
+      .hero-video { display: none; }
+      .hero-mobile-bg { display: block; }
       .hero-overlay {
         background: linear-gradient(
           to right,
@@ -986,6 +998,7 @@ Parliament API data — only stances will be "unknown".
     <video class="hero-video" autoplay muted loop playsinline webkit-playsinline poster="hero-poster.jpg">
       <source src="hero-video.mp4" type="video/mp4" />
     </video>
+    <img class="hero-mobile-bg" src="hero-mobile.webp" alt="" role="presentation" />
     <div class="hero-overlay"></div>
     <div class="hero-content">
       <div class="hero-eyebrow">A civic accountability tracker</div>
