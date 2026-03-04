@@ -1506,6 +1506,8 @@ data — stances will default to "unknown".
   }
 
   function renderWriteButton(actions, mp_name, mp_email, mp_id) {
+    const firstName = mp_name ? mp_name.split(' ')[0] : 'your MP';
+    const btnText = `Get ${escapeHTML(firstName)} to sign our bill`;
     const emailBody = encodeURIComponent(
       `Dear ${mp_name},\n\n` +
       `I am writing to you as a constituent to urge you to publicly support the full restoration and renewal of the Palace of Westminster.\n\n` +
@@ -1519,16 +1521,16 @@ data — stances will default to "unknown".
       actions.innerHTML = `<a
         href="mailto:${mp_email}?subject=${subject}&body=${emailBody}"
         class="write-btn"
-        aria-label="Write to ${escapeHTML(mp_name)} about Palace of Westminster restoration"
-      >Write to your MP</a>`;
+        aria-label="Get ${escapeHTML(firstName)} to sign the bill"
+      >${btnText}</a>`;
     } else {
       actions.innerHTML = `<a
         href="https://www.writetothem.com/"
         target="_blank"
         rel="noopener noreferrer"
         class="write-btn outlined"
-        aria-label="Write to your MP via WriteToThem"
-      >Write via WriteToThem</a>`;
+        aria-label="Get ${escapeHTML(firstName)} to sign the bill"
+      >${btnText}</a>`;
     }
   }
 
