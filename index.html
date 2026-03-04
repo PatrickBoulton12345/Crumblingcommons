@@ -99,49 +99,7 @@ data — stances will default to "unknown".
     }
     #demo-banner.visible { display: block; }
 
-    /* ===== RESULTS CARD — MP PORTRAIT LAYOUT ===== */
-    .results-card-inner {
-      display: flex;
-      gap: 28px;
-      align-items: flex-start;
-    }
-
-    .results-portrait-wrap {
-      flex-shrink: 0;
-    }
-
-    .results-portrait {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      object-fit: cover;
-      background: #2a2a2a;
-      border: 2px solid var(--border);
-      display: block;
-    }
-
-    .results-portrait-placeholder {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      background: #2a2a2a;
-      border: 2px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .results-portrait-placeholder svg {
-      width: 36px;
-      height: 36px;
-      opacity: 0.3;
-    }
-
-    .results-text-content {
-      flex: 1;
-      min-width: 0;
-    }
+    /* ===== RESULTS HERO — MP PORTRAIT ===== */
 
     /* ===== CUSTOM TOOLTIP ===== */
     .cc-tooltip {
@@ -575,96 +533,148 @@ data — stances will default to "unknown".
       min-height: 20px;
     }
 
-    /* ===== RESULTS PANEL ===== */
+    /* ===== RESULTS PANEL — FULL PAGE HERO ===== */
     #results {
       display: none;
-      background: var(--bg-section);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
+      background: var(--bg-main);
+      min-height: 100vh;
+      padding: 80px 0;
+      opacity: 0;
+      transition: opacity 0.6s ease;
     }
 
-    #results.visible { display: block; }
+    #results.visible {
+      display: block;
+    }
 
-    .results-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 36px;
-      max-width: 640px;
+    #results.fade-in {
+      opacity: 1;
+    }
+
+    .results-hero-inner {
+      display: flex;
+      gap: 60px;
+      align-items: center;
+      max-width: 1100px;
       margin: 0 auto;
+      padding: 0 32px;
     }
 
-    .results-constituency {
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 8px;
+    .results-hero-text {
+      flex: 1;
+      min-width: 0;
     }
 
-    .results-mp-name {
-      font-family: var(--font-serif);
-      font-size: clamp(28px, 5vw, 40px);
+    .results-hero-photo {
+      flex-shrink: 0;
+      text-align: center;
+    }
+
+    .results-portrait-hero {
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #2a2a2a;
+      border: 3px solid var(--border);
+      display: block;
+    }
+
+    .results-portrait-hero-placeholder {
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: #2a2a2a;
+      border: 3px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .results-portrait-hero-placeholder svg {
+      width: 64px;
+      height: 64px;
+      opacity: 0.3;
+    }
+
+    .results-mp-meta {
+      margin-top: 16px;
+      text-align: center;
+    }
+
+    .results-mp-meta .mp-name-label {
+      font-family: var(--font-octarine);
       font-weight: 700;
-      line-height: 1.1;
-      margin-bottom: 10px;
+      font-size: 18px;
+      text-transform: uppercase;
+      color: #ffffff;
     }
 
-    .results-party {
-      font-size: 14px;
+    .results-mp-meta .mp-party-label {
+      font-size: 13px;
       color: var(--text-muted);
-      margin-bottom: 24px;
-    }
-
-    .results-divider {
-      border: none;
-      border-top: 1px solid var(--border);
-      margin: 24px 0;
+      margin-top: 4px;
     }
 
     .stance-badge {
       display: inline-block;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
       letter-spacing: 0.15em;
       text-transform: uppercase;
-      padding: 4px 10px;
+      padding: 5px 12px;
       border-radius: 2px;
-      margin-bottom: 10px;
+      margin-top: 12px;
     }
 
     .stance-badge.supports { background: rgba(76,175,80,0.15); color: var(--accent-green); }
     .stance-badge.opposes  { background: rgba(231,76,60,0.15);  color: var(--accent-red); }
     .stance-badge.unknown  { background: rgba(136,136,136,0.15); color: #888888; }
 
-    .stance-message {
-      font-family: var(--font-serif);
-      font-size: clamp(17px, 3vw, 21px);
-      font-style: italic;
-      line-height: 1.45;
-      margin-bottom: 28px;
+    .results-hero-heading {
+      font-family: var(--font-octarine);
+      font-weight: 700;
+      font-size: clamp(28px, 5vw, 52px);
+      line-height: 1.1;
+      text-transform: uppercase;
+      margin-bottom: 12px;
     }
 
-    .stance-message.supports { color: var(--accent-green); }
-    .stance-message.opposes  { color: var(--accent-red); }
-    .stance-message.unknown  { color: var(--accent-red); }
+    .results-hero-subheading {
+      font-family: var(--font-octarine);
+      font-weight: 300;
+      font-size: clamp(16px, 2.5vw, 24px);
+      line-height: 1.5;
+      color: rgba(255, 255, 255, 0.9);
+      margin-top: 20px;
+      max-width: 600px;
+    }
+
+    .results-constituency-label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
 
     .write-btn {
       display: inline-block;
       background: var(--accent-red);
       color: #ffffff;
-      font-family: var(--font-sans);
-      font-size: 13px;
-      font-weight: 600;
+      font-family: var(--font-octarine);
+      font-size: 14px;
+      font-weight: 700;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      padding: 15px 32px;
+      padding: 18px 40px;
       border: none;
       border-radius: 2px;
       cursor: pointer;
       text-decoration: none;
       transition: background 0.2s;
+      margin-top: 32px;
     }
 
     .write-btn:hover { background: #c0392b; }
@@ -931,18 +941,27 @@ data — stances will default to "unknown".
         text-align: center;
       }
 
-      .results-card { padding: 24px 20px; }
+      #results { padding: 48px 0; min-height: auto; }
 
-      .results-card-inner {
+      .results-hero-inner {
         flex-direction: column;
-        align-items: center;
-        gap: 20px;
+        gap: 32px;
+        padding: 0 20px;
       }
 
-      .results-text-content {
-        text-align: center;
-        width: 100%;
+      .results-hero-text { text-align: center; }
+      .results-hero-text .results-hero-heading { font-size: clamp(24px, 7vw, 40px); }
+      .results-hero-text .results-hero-subheading { margin-left: auto; margin-right: auto; }
+
+      .results-hero-photo { order: -1; }
+
+      .results-portrait-hero,
+      .results-portrait-hero-placeholder {
+        width: 160px;
+        height: 160px;
       }
+
+      .write-btn { width: 100%; text-align: center; }
 
       #map-container { height: 400px; }
 
@@ -1055,25 +1074,22 @@ data — stances will default to "unknown".
 
   <!-- ===== RESULTS PANEL ===== -->
   <section id="results" aria-label="Your MP's stance" aria-live="polite">
-    <div class="container">
-      <div class="results-card" id="results-card">
-        <div class="results-card-inner">
-          <!-- Portrait -->
-          <div class="results-portrait-wrap" id="result-portrait-wrap">
-            <div class="results-portrait-placeholder" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-            </div>
-          </div>
-          <!-- Text -->
-          <div class="results-text-content">
-            <p class="results-constituency" id="result-constituency"></p>
-            <h2 class="results-mp-name" id="result-mp-name"></h2>
-            <p class="results-party" id="result-party"></p>
-            <hr class="results-divider" />
-            <span class="stance-badge" id="result-stance-badge"></span>
-            <p class="stance-message" id="result-stance-message"></p>
-            <div id="result-actions"></div>
-          </div>
+    <div class="results-hero-inner">
+      <!-- Left: Hero text -->
+      <div class="results-hero-text">
+        <p class="results-constituency-label" id="result-constituency"></p>
+        <div class="results-hero-heading" id="result-heading-1" style="color:#ffffff;"></div>
+        <div class="results-hero-heading" id="result-heading-2" style="color:var(--accent-red);"></div>
+        <div class="results-hero-subheading" id="result-heading-3"></div>
+        <div id="result-actions"></div>
+      </div>
+      <!-- Right: MP photo -->
+      <div class="results-hero-photo">
+        <div id="result-portrait-wrap"></div>
+        <div class="results-mp-meta">
+          <div class="mp-name-label" id="result-mp-name"></div>
+          <div class="mp-party-label" id="result-party"></div>
+          <span class="stance-badge" id="result-stance-badge"></span>
         </div>
       </div>
     </div>
@@ -1470,7 +1486,9 @@ data — stances will default to "unknown".
   function showResults({ constituency_name, mp_name, party, stance, mp_email, mp_id, thumbnail }) {
     const resultsSection = document.getElementById('results');
     const badge          = document.getElementById('result-stance-badge');
-    const message        = document.getElementById('result-stance-message');
+    const heading1       = document.getElementById('result-heading-1');
+    const heading2       = document.getElementById('result-heading-2');
+    const heading3       = document.getElementById('result-heading-3');
     const actions        = document.getElementById('result-actions');
     const portraitWrap   = document.getElementById('result-portrait-wrap');
 
@@ -1478,41 +1496,47 @@ data — stances will default to "unknown".
     document.getElementById('result-mp-name').textContent      = mp_name;
     document.getElementById('result-party').textContent        = party || '';
 
-    // Portrait
+    // Portrait — large hero size
     if (thumbnail) {
       portraitWrap.innerHTML = `<img
         src="${thumbnail}"
-        class="results-portrait"
+        class="results-portrait-hero"
         alt="Portrait of ${escapeHTML(mp_name)}"
         loading="lazy"
         onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
-      /><div class="results-portrait-placeholder" style="display:none" aria-hidden="true">${silhouetteSVG(36)}</div>`;
+      /><div class="results-portrait-hero-placeholder" style="display:none" aria-hidden="true">${silhouetteSVG(64)}</div>`;
     } else {
-      portraitWrap.innerHTML = `<div class="results-portrait-placeholder" aria-hidden="true">${silhouetteSVG(36)}</div>`;
+      portraitWrap.innerHTML = `<div class="results-portrait-hero-placeholder" aria-hidden="true">${silhouetteSVG(64)}</div>`;
     }
 
-    // Reset classes
-    badge.className   = 'stance-badge';
-    message.className = 'stance-message';
+    // Stance badge
+    badge.className = 'stance-badge';
 
+    // Hero text — dynamic per stance
     if (stance === 'supports') {
       badge.classList.add('supports');
-      badge.textContent   = 'Supports restoration';
-      message.classList.add('supports');
-      message.textContent = 'Your MP supports restoration of the Palace of Westminster.';
+      badge.textContent = 'Supports restoration';
+      heading1.textContent = 'Your MP supports a delayed and expensive restoration.';
+      heading1.style.color = '#ffffff';
+      heading2.textContent = 'This could cover the cost of INPUT LATER police officers, or SIXTY Notre Dames.';
+      heading3.textContent = 'This is not acceptable.';
     } else if (stance === 'opposes') {
       badge.classList.add('opposes');
-      badge.textContent   = 'Opposes restoration';
-      message.classList.add('opposes');
-      message.textContent = 'Your MP opposes restoration of the Palace of Westminster.';
+      badge.textContent = 'Opposes restoration';
+      heading1.textContent = 'Your MP opposes restoring the crumbling Palace of Westminster.';
+      heading1.style.color = '#ffffff';
+      heading2.textContent = 'Without action, the building will continue to decay — risking catastrophic failure.';
+      heading3.textContent = 'This is not acceptable.';
     } else {
       badge.classList.add('unknown');
-      badge.textContent   = 'No public stance';
-      message.classList.add('unknown');
-      message.textContent = 'Your MP is SILENT on this issue. Make them listen.';
+      badge.textContent = 'No public stance';
+      heading1.textContent = 'Your MP is silent on the crumbling Palace of Westminster.';
+      heading1.style.color = '#ffffff';
+      heading2.textContent = 'Silence is complicity. The \u00A339bn bill keeps growing while MPs say nothing.';
+      heading3.textContent = 'Make them listen.';
     }
 
-    // Write to MP button — will be updated after contact fetch if needed
+    // Write to MP button
     renderWriteButton(actions, mp_name, mp_email, mp_id);
 
     // If no email yet and we have an MP id, fetch contact info on-demand
@@ -1520,7 +1544,12 @@ data — stances will default to "unknown".
       fetchMPContactOnDemand(mp_id, mp_name, constituency_name, actions);
     }
 
+    // Show + fade in
     resultsSection.classList.add('visible');
+    resultsSection.classList.remove('fade-in');
+    // Force reflow so the transition triggers
+    void resultsSection.offsetWidth;
+    resultsSection.classList.add('fade-in');
     resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
