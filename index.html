@@ -84,52 +84,6 @@ data — stances will default to "unknown".
       min-height: 100vh;
     }
 
-    /* ===== DATA LOADING BANNER ===== */
-    #data-loading-banner {
-      background: #1a1a2e;
-      border-bottom: 1px solid #333;
-      color: #aaaaaa;
-      text-align: center;
-      padding: 10px 20px;
-      font-size: 13px;
-      letter-spacing: 0.04em;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      flex-direction: column;
-    }
-    #data-loading-banner.visible { display: flex; }
-    #data-loading-banner .banner-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    #data-loading-banner .mini-spinner {
-      width: 14px;
-      height: 14px;
-      border: 2px solid #444;
-      border-top-color: var(--accent-red);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      flex-shrink: 0;
-    }
-    #loading-progress-bar-track {
-      width: 240px;
-      max-width: 80vw;
-      height: 3px;
-      background: #333;
-      border-radius: 2px;
-      overflow: hidden;
-    }
-    #loading-progress-bar-fill {
-      height: 100%;
-      background: var(--accent-red);
-      border-radius: 2px;
-      width: 0%;
-      transition: width 0.3s ease;
-    }
-
     /* ===== DEMO MODE BANNER ===== */
     #demo-banner {
       background: #2a1a00;
@@ -1062,18 +1016,7 @@ data — stances will default to "unknown".
 </head>
 <body>
 
-  <!-- DATA LOADING BANNER -->
-  <div id="data-loading-banner" role="status" aria-live="polite">
-    <div class="banner-row">
-      <div class="mini-spinner" aria-hidden="true"></div>
-      <span id="data-loading-text">Loading MP data from UK Parliament&hellip;</span>
-    </div>
-    <div id="loading-progress-bar-track" aria-hidden="true">
-      <div id="loading-progress-bar-fill"></div>
-    </div>
-  </div>
-
-  <!-- DEMO MODE BANNER (shown only if Parliament API fails entirely) -->
+  <!-- DEMO MODE BANNER (shown only if mp-data.json fails to load) -->
   <div id="demo-banner" role="status" aria-live="polite">
     Demo Mode — Parliament API unavailable. Showing sample data only.
   </div>
@@ -1308,18 +1251,7 @@ data — stances will default to "unknown".
 
   <script>
   // ============================================================
-  // CONFIGURATION
-  // ============================================================
-  // Google Sheet for MP stances.
-  // Columns: A: Constituency, B: MP Name, C: Support? (Y/N)
-  // If not configured, all MPs default to "unknown" stance.
-  const GOOGLE_SHEETS_API_KEY = 'AIzaSyC52PrXrCwA-1tLaVtCtMlkeGHJvKbKmjw';
-  const GOOGLE_SHEET_ID       = '1GKgMwE6Tdq5hBBB-S3h-U8HWg2QU4FZOq62VXtKVHP0';
-  const SHEET_NAME            = 'UK MPs';
-  // ============================================================
-
-  // ============================================================
-  // GEOJSON DATA (inlined — do not edit manually)
+  // GEOJSON DATA
   // ============================================================
 
   // ============================================================
@@ -1358,154 +1290,24 @@ data — stances will default to "unknown".
   }
 
   // ============================================================
-  // PARLIAMENT API — fetch all 650 MPs with pagination
-  // ============================================================
-
-  async function fetchAllMPs() {
-    const TOTAL   = 650;
-    const PAGE    = 20;
-    const BASE    = 'https://members-api.parliament.uk/api/Members/Search?House=1&IsCurrentMember=true';
-    const banner  = document.getElementById('data-loading-banner');
-    const txtEl   = document.getElementById('data-loading-text');
-    const fillEl  = document.getElementById('loading-progress-bar-fill');
-
-    banner.classList.add('visible');
-    txtEl.textContent = 'Loading MP data from UK Parliament\u2026';
-
-    const allMembers = [];
-    let skip = 0;
-
-    while (true) {
-      const url = `${BASE}&skip=${skip}&take=${PAGE}`;
-      const res = await fetch(url);
-      if (!res.ok) throw new Error(`Parliament API error: ${res.status} at skip=${skip}`);
-      const json = await res.json();
-      const items = json.items || [];
-      if (items.length === 0) break;
-
-      for (const item of items) {
-        const v = item.value;
-        if (!v) continue;
-        // Constituency name is nested under latestHouseMembership
-        const constName = (v.latestHouseMembership && v.latestHouseMembership.membershipFrom) || '';
-        if (!constName) continue;
-        allMembers.push({
-          mp_name:           v.nameDisplayAs                                                   || 'Unknown MP',
-          party:             (v.latestParty && v.latestParty.name)                            || '',
-          party_abbr:        (v.latestParty && v.latestParty.abbreviation)                    || '',
-          mp_id:             v.id,
-          // thumbnailUrl is provided by the API but the Thumbnail endpoint is the canonical URL
-          thumbnail:         v.thumbnailUrl || `https://members-api.parliament.uk/api/Members/${v.id}/Thumbnail`,
-          constituency_name: constName,
-          stance:            'unknown',
-          mp_email:          '',
-        });
-      }
-
-      skip += PAGE;
-      const loaded = Math.min(skip, TOTAL);
-      const pct    = Math.round((loaded / TOTAL) * 100);
-      txtEl.textContent  = `Loading MPs\u2026 ${loaded} / ${TOTAL}`;
-      fillEl.style.width = pct + '%';
-
-      // Small delay to be respectful to the API
-      if (items.length === PAGE) {
-        await new Promise(r => setTimeout(r, 60));
-      } else {
-        break;
-      }
-    }
-
-    return allMembers;
-  }
-
-  // ============================================================
-  // GOOGLE SHEETS — stance overrides only
-  // ============================================================
-
-  async function loadStanceOverrides() {
-    const isConfigured =
-      GOOGLE_SHEETS_API_KEY !== 'YOUR_API_KEY_HERE' &&
-      GOOGLE_SHEET_ID       !== 'YOUR_SHEET_ID_HERE';
-
-    if (!isConfigured) return {};
-
-    try {
-      const url = `https://sheets.googleapis.com/v4/spreadsheets/${GOOGLE_SHEET_ID}/values/${encodeURIComponent(SHEET_NAME)}?key=${GOOGLE_SHEETS_API_KEY}`;
-      const res = await fetch(url);
-      if (!res.ok) throw new Error(`Sheets API error: ${res.status}`);
-      const json = await res.json();
-      const rows = (json.values || []).slice(1); // skip header row
-
-      const overrides = {};
-      for (const row of rows) {
-        // Columns: A: Constituency (0), B: MP Name (1), C: Support? Y/N (2)
-        const constName = (row[0] || '').trim();
-        const supportRaw = (row[2] || '').trim().toUpperCase();
-        if (!constName) continue;
-        var stance = 'unknown';
-        if (supportRaw === 'Y') stance = 'supports';
-        else if (supportRaw === 'N') stance = 'opposes';
-        overrides[constName] = {
-          stance:   stance,
-          mp_email: '',
-        };
-      }
-      return overrides;
-    } catch (err) {
-      console.warn('Google Sheets fetch failed — stances will show as unknown:', err);
-      return {};
-    }
-  }
-
-  // ============================================================
-  // MASTER DATA LOAD — Parliament API + Sheet stances merged
+  // DATA LOAD — from pre-built mp-data.json
   // ============================================================
 
   async function loadAllData() {
-    const banner = document.getElementById('data-loading-banner');
-    const txtEl  = document.getElementById('data-loading-text');
-
     try {
-      // Step 1: Fetch all MPs from Parliament API
-      const members = await fetchAllMPs();
+      const res = await fetch('mp-data.json');
+      if (!res.ok) throw new Error('mp-data.json fetch failed: ' + res.status);
+      const json = await res.json();
 
-      if (members.length === 0) {
-        throw new Error('Parliament API returned no members');
-      }
-
-      // Build mpData keyed by constituency name
-      const built = {};
-      for (const m of members) {
-        built[m.constituency_name] = m;
-      }
-
-      // Step 2: Overlay stance data from Google Sheet (if configured)
-      txtEl.textContent = 'Loading stance data\u2026';
-      const overrides = await loadStanceOverrides();
-      // Build normalised lookup for Parliament data to handle diacritics/case mismatches
-      const builtNorm = {};
-      for (const key of Object.keys(built)) builtNorm[normaliseName(key)] = built[key];
-      for (const [constName, override] of Object.entries(overrides)) {
-        const target = built[constName] || builtNorm[normaliseName(constName)];
-        if (target) {
-          target.stance = override.stance;
-          if (override.mp_email) target.mp_email = override.mp_email;
-        }
-      }
-
-      mpData = built;
+      mpData = json.members || {};
       rebuildNormMap();
       isDemoMode = false;
 
     } catch (err) {
-      console.error('Parliament API failed — activating demo mode:', err);
+      console.error('Failed to load mp-data.json — activating demo mode:', err);
       activateDemoMode();
       return;
     }
-
-    // Hide loading banner
-    banner.classList.remove('visible');
 
     // Update stats and re-colour map
     updateStats();
@@ -1540,7 +1342,6 @@ data — stances will default to "unknown".
       },
     };
     document.getElementById('demo-banner').classList.add('visible');
-    document.getElementById('data-loading-banner').classList.remove('visible');
     updateStats();
     if (geoLayer) applyMapColouring();
   }
@@ -1567,7 +1368,7 @@ data — stances will default to "unknown".
 
   // Normalise: strip diacritics, lowercase — handles ŵ→w, Ŵ→w, etc.
   function normaliseName(s) {
-    return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[\s-]+/g, ' ').trim();
   }
 
   // Build a lookup map with normalised keys (rebuilt when mpData changes)
