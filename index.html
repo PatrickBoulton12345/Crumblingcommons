@@ -1483,14 +1483,19 @@ data — stances will default to "unknown".
       // Step 2: Overlay stance data from Google Sheet (if configured)
       txtEl.textContent = 'Loading stance data\u2026';
       const overrides = await loadStanceOverrides();
+      // Build normalised lookup for Parliament data to handle diacritics/case mismatches
+      const builtNorm = {};
+      for (const key of Object.keys(built)) builtNorm[normaliseName(key)] = built[key];
       for (const [constName, override] of Object.entries(overrides)) {
-        if (built[constName]) {
-          built[constName].stance   = override.stance;
-          if (override.mp_email) built[constName].mp_email = override.mp_email;
+        const target = built[constName] || builtNorm[normaliseName(constName)];
+        if (target) {
+          target.stance = override.stance;
+          if (override.mp_email) target.mp_email = override.mp_email;
         }
       }
 
       mpData = built;
+      rebuildNormMap();
       isDemoMode = false;
 
     } catch (err) {
@@ -1560,8 +1565,22 @@ data — stances will default to "unknown".
   // MAP — look up data by constituency NAME (PCON24NM)
   // ============================================================
 
+  // Normalise: strip diacritics, lowercase — handles ŵ→w, Ŵ→w, etc.
+  function normaliseName(s) {
+    return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  }
+
+  // Build a lookup map with normalised keys (rebuilt when mpData changes)
+  var mpDataNorm = {};
+  function rebuildNormMap() {
+    mpDataNorm = {};
+    for (var key in mpData) {
+      mpDataNorm[normaliseName(key)] = mpData[key];
+    }
+  }
+
   function getMPByName(name) {
-    return mpData[name] || null;
+    return mpData[name] || mpDataNorm[normaliseName(name)] || null;
   }
 
   function featureStyle(feature) {
