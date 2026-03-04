@@ -1394,13 +1394,7 @@ data — stances will default to "unknown".
       onEachFeature: function(feature, layer) {
         var name = feature.properties.PCON24NM;
 
-        var data = getMPByName(name);
-        layer.bindTooltip(buildTooltipHTML(name, data), {
-          sticky: false,
-          permanent: false,
-          opacity: 1,
-          className: 'cc-tooltip-wrapper',
-        });
+        // Tooltip removed — click shows full results page
 
         layer.on({
           mouseover: function(e) {
@@ -1419,7 +1413,6 @@ data — stances will default to "unknown".
             geoLayer.resetStyle(e.target);
           },
           click: function(e) {
-            layer.closeTooltip();
             var clickedName = feature.properties.PCON24NM;
             var clickedData = getMPByName(clickedName) || {
               mp_name:           'No data available',
