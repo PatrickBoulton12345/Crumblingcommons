@@ -309,72 +309,6 @@ data — stances will default to "unknown".
       width: 100%;
     }
 
-    /* ===== HERO INTRO (before scrolling) ===== */
-    .hero-intro {
-      position: absolute;
-      inset: 0;
-      z-index: 2;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: flex-start;
-      transition: opacity 0.3s ease;
-    }
-
-    .hero-intro-inner {
-      padding: 0 48px;
-      max-width: 700px;
-    }
-
-    .hero-intro-heading {
-      font-family: var(--font-octarine);
-      font-weight: 700;
-      font-size: clamp(32px, 6vw, 64px);
-      line-height: 1.15;
-      text-transform: uppercase;
-      color: #ffffff;
-      margin-bottom: 8px;
-    }
-
-    .hero-intro-sub {
-      font-family: var(--font-octarine);
-      font-weight: 700;
-      font-size: clamp(32px, 6vw, 64px);
-      line-height: 1.15;
-      text-transform: uppercase;
-      color: var(--accent-red);
-    }
-
-    .scroll-cue {
-      position: absolute;
-      bottom: 40px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .scroll-cue-text {
-      font-family: var(--font-sans);
-      font-size: 13px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.6);
-    }
-
-    .scroll-cue-arrow {
-      color: rgba(255, 255, 255, 0.6);
-      animation: bounce 1.8s ease infinite;
-    }
-
-    @keyframes bounce {
-      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-      40% { transform: translateY(8px); }
-      60% { transform: translateY(4px); }
-    }
-
     /* ===== SCROLL REVEAL TEXT STYLES (Slide 1 — fill effect) ===== */
     .scroll-reveal-line {
       font-family: var(--font-octarine);
@@ -1047,9 +981,6 @@ data — stances will default to "unknown".
         );
       }
 
-      .hero-intro-inner { padding: 0 24px; }
-      .scroll-cue { bottom: 24px; }
-
       /* Slide text size overrides for mobile */
       .slide-heading { font-size: clamp(26px, 7vw, 44px); }
       .slide-subheading { font-size: clamp(16px, 4vw, 22px); }
@@ -1127,18 +1058,6 @@ data — stances will default to "unknown".
 
       <!-- ── OVERLAY (z-index 1) ── -->
       <div class="hero-overlay" id="hero-overlay"></div>
-
-      <!-- ── HERO INTRO (visible before scrolling) ── -->
-      <div class="hero-intro" id="hero-intro">
-        <div class="hero-intro-inner">
-          <h1 class="hero-intro-heading">Parliament is crumbling.</h1>
-          <p class="hero-intro-sub">It might cost &pound;39bn to repair.</p>
-        </div>
-        <div class="scroll-cue" aria-hidden="true">
-          <span class="scroll-cue-text">Scroll</span>
-          <svg class="scroll-cue-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </div>
-      </div>
 
       <!-- ── SLIDE 1: Parliament / fill text (z-index 2) ── -->
       <div class="slide-content" id="slide-1-content">
@@ -1943,9 +1862,6 @@ data — stances will default to "unknown".
     var bgDark       = document.getElementById('bg-dark');
     var heroOverlay  = document.getElementById('hero-overlay');
 
-    // Hero intro (fades out on scroll)
-    var heroIntro    = document.getElementById('hero-intro');
-
     // Slide content panels
     var slide1       = document.getElementById('slide-1-content');
     var slide2       = document.getElementById('slide-2-content');
@@ -2029,10 +1945,6 @@ data — stances will default to "unknown".
           //  Slide 2:  0.25 – 0.50  (notre dame fire)
           //  Slide 3:  0.50 – 0.70  (notre dame rebuilt)
           //  Slide 4:  0.70 – 0.95  (60 notre dames)
-
-          // ── HERO INTRO (fades out 0–4%) ─────────────────────────────────
-          var introOp = 1 - clamp(p / 0.04, 0, 1);
-          setOp(heroIntro, introOp);
 
           // ── BACKGROUND LAYERS ────────────────────────────────────────────
 
