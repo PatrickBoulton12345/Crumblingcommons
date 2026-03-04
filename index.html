@@ -1516,17 +1516,17 @@ data — stances will default to "unknown".
     if (stance === 'supports') {
       badge.classList.add('supports');
       badge.textContent = 'Supports restoration';
-      heading1.textContent = 'Your MP supports spending taxpayer\u2019s cash on a bloated project.';
-      heading1.style.color = 'var(--accent-red)';
-      heading2.textContent = 'We have the answer. Our bill will streamline the process, and save billions.';
+      heading1.textContent = 'Your MP supports a delayed and expensive restoration.';
+      heading1.style.color = '#ffffff';
+      heading2.textContent = '';
       heading3.textContent = '';
     } else if (stance === 'opposes') {
       badge.classList.add('opposes');
       badge.textContent = 'Opposes restoration';
-      heading1.textContent = 'Your MP opposes restoring the crumbling Palace of Westminster.';
-      heading1.style.color = '#ffffff';
-      heading2.textContent = 'Without action, the building will continue to decay — risking catastrophic failure.';
-      heading3.textContent = 'This is not acceptable.';
+      heading1.textContent = 'Your MP supports spending taxpayer\u2019s cash on a bloated project.';
+      heading1.style.color = 'var(--accent-red)';
+      heading2.textContent = 'We have the answer. Our bill will streamline the process, and save billions.';
+      heading3.textContent = '';
     } else {
       badge.classList.add('unknown');
       badge.textContent = 'No public stance';
