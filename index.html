@@ -1888,7 +1888,7 @@ data — stances will default to "unknown".
           // ── BACKGROUND LAYERS ────────────────────────────────────────────
 
           // B&W Parliament: visible at start, fades out 22–28%
-          setOp(bgParliament, slideOpacity(p, 0, 0.01, 0.22, 0.28));
+          setOp(bgParliament, slideOpacity(p, 0, 0, 0.22, 0.28));
 
           // Notre Dame fire: fades in 22–28%, fades out 45–52%
           setOp(bgFire, slideOpacity(p, 0.22, 0.28, 0.45, 0.52));
@@ -1907,7 +1907,7 @@ data — stances will default to "unknown".
           // ── SLIDE CONTENT PANELS ─────────────────────────────────────────
 
           // Slide 1 (Parliament): visible on load, fades out 20–25%
-          var s1Op = slideOpacity(p, 0, 0.01, 0.20, 0.25);
+          var s1Op = slideOpacity(p, 0, 0, 0.20, 0.25);
           setOp(slide1, s1Op);
           if (slide1) slide1.classList.toggle('visible', s1Op > 0);
 
