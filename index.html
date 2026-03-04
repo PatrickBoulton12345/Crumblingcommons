@@ -1396,7 +1396,8 @@ data — stances will default to "unknown".
 
         var data = getMPByName(name);
         layer.bindTooltip(buildTooltipHTML(name, data), {
-          sticky: true,
+          sticky: false,
+          permanent: false,
           opacity: 1,
           className: 'cc-tooltip-wrapper',
         });
@@ -1418,6 +1419,7 @@ data — stances will default to "unknown".
             geoLayer.resetStyle(e.target);
           },
           click: function(e) {
+            layer.closeTooltip();
             var clickedName = feature.properties.PCON24NM;
             var clickedData = getMPByName(clickedName) || {
               mp_name:           'No data available',
