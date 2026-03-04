@@ -239,7 +239,7 @@ data — stances will default to "unknown".
     /* ===== HERO + SCROLL REVEAL WRAPPER ===== */
     #hero-wrapper {
       position: relative;
-      height: 420vh; /* ~140vh per slide x 5 slides */
+      height: 560vh; /* ~140vh per slide x 5 slides */
       background: #000;
     }
 
@@ -914,7 +914,7 @@ data — stances will default to "unknown".
     @media (max-width: 768px) {
       section { padding: 48px 0; }
 
-      #hero-wrapper { height: 420vh; }
+      #hero-wrapper { height: 560vh; }
       .slide-inner { padding: 0 24px; }
       .hero-overlay {
         background: linear-gradient(
@@ -993,17 +993,28 @@ data — stances will default to "unknown".
 
       <!-- ── BACKGROUND LAYERS (z-index 0) ── -->
 
-      <!-- B&W Parliament (unused — kept for potential future use) -->
-      <img class="slide-bg" id="bg-parliament" src="parliament-bw.png" alt="" role="presentation" style="opacity:0" />
-      <!-- Slide 1: Notre Dame fire -->
-      <img class="slide-bg" id="bg-fire" src="notre-dame-fire.jpg" alt="" role="presentation" style="opacity:1" />
-      <!-- Slides 3-5: dark background -->
+      <!-- Slide 1: B&W Parliament -->
+      <img class="slide-bg" id="bg-parliament" src="parliament-bw.png" alt="" role="presentation" style="opacity:1" />
+      <!-- Slide 2: Notre Dame fire -->
+      <img class="slide-bg" id="bg-fire" src="notre-dame-fire.jpg" alt="" role="presentation" />
+      <!-- Slides 3-4: dark background -->
       <div class="slide-bg slide-bg-dark" id="bg-dark"></div>
 
       <!-- ── OVERLAY (z-index 1) ── -->
       <div class="hero-overlay" id="hero-overlay"></div>
 
-      <!-- ── SLIDE 1: Notre Dame Fire (z-index 2) ── -->
+      <!-- ── SLIDE 1: Parliament (z-index 2) — visible on load ── -->
+      <div class="slide-content visible" id="slide-1-content" style="opacity:1">
+        <div class="slide-inner">
+          <div class="slide-heading" style="color:#ffffff;">Parliament is crumbling.</div>
+          <div class="slide-heading" style="color:var(--accent-red);">It might cost &pound;39bn to repair.</div>
+          <span class="slide-gap"></span>
+          <div class="slide-subheading" style="color:#ffffff;">We don&rsquo;t think so.</div>
+          <div class="slide-subheading" style="color:var(--accent-red); margin-top:12px;">We have a bill to change this.</div>
+        </div>
+      </div>
+
+      <!-- ── SLIDE 2: Notre Dame Fire (z-index 2) ── -->
       <div class="slide-content" id="slide-2-content" aria-label="Notre Dame fire slide">
         <div class="slide-inner">
           <div class="slide-heading text-fill-red" id="s2-line1">In 2019, Notre Dame burned.</div>
@@ -1797,11 +1808,12 @@ data — stances will default to "unknown".
     var heroOverlay  = document.getElementById('hero-overlay');
 
     // Slide content panels
+    var slide1       = document.getElementById('slide-1-content');
     var slide2       = document.getElementById('slide-2-content');
     var slide3       = document.getElementById('slide-3-content');
     var slide4       = document.getElementById('slide-4-content');
 
-    // Slide 1 (Notre Dame fire) fill lines
+    // Slide 2 (Notre Dame fire) fill lines
     var s2line1 = document.getElementById('s2-line1');
     var s2line2 = document.getElementById('s2-line2');
     var s2line3 = document.getElementById('s2-line3');
@@ -1868,23 +1880,24 @@ data — stances will default to "unknown".
           var p           = clamp(scrolled / totalScroll, 0, 1);
 
           // ── SLIDE BOUNDARIES (progress 0–1) ──────────────────────────────
-          //  Slide 1:  0.00 – 0.33  (notre dame fire)
-          //  Slide 2:  0.33 – 0.60  (notre dame rebuilt)
-          //  Slide 3:  0.60 – 0.95  (60 notre dames)
+          //  Slide 1:  0.00 – 0.25  (parliament — static text, visible on load)
+          //  Slide 2:  0.25 – 0.50  (notre dame fire)
+          //  Slide 3:  0.50 – 0.70  (notre dame rebuilt)
+          //  Slide 4:  0.70 – 0.95  (60 notre dames)
 
           // ── BACKGROUND LAYERS ────────────────────────────────────────────
 
-          // Notre Dame fire: visible at start, fades out 28–35%
-          setOp(bgFire, slideOpacity(p, 0, 0.01, 0.28, 0.35));
+          // B&W Parliament: visible at start, fades out 22–28%
+          setOp(bgParliament, slideOpacity(p, 0, 0.01, 0.22, 0.28));
 
-          // B&W Parliament: not used — keep hidden
-          setOp(bgParliament, 0);
+          // Notre Dame fire: fades in 22–28%, fades out 45–52%
+          setOp(bgFire, slideOpacity(p, 0.22, 0.28, 0.45, 0.52));
 
-          // Dark bg: fades in 28–35%, holds for slides 2-3, fades out at end
-          setOp(bgDark, slideOpacity(p, 0.28, 0.35, 0.93, 0.98));
+          // Dark bg: fades in 45–52%, holds for slides 3-4, fades out at end
+          setOp(bgDark, slideOpacity(p, 0.45, 0.52, 0.93, 0.98));
 
           // ── OVERLAY ───────────────────────────────────────────────────────
-          var overlayOnDark = p >= 0.35 && p <= 0.93;
+          var overlayOnDark = p >= 0.52 && p <= 0.93;
           if (heroOverlay) {
             heroOverlay.style.background = overlayOnDark
               ? 'rgba(0,0,0,0.35)'
@@ -1893,39 +1906,44 @@ data — stances will default to "unknown".
 
           // ── SLIDE CONTENT PANELS ─────────────────────────────────────────
 
-          // Slide 1 (Notre Dame fire): visible from start, fades out 28–33%
-          var s2Op = slideOpacity(p, 0, 0.01, 0.28, 0.33);
+          // Slide 1 (Parliament): visible on load, fades out 20–25%
+          var s1Op = slideOpacity(p, 0, 0.01, 0.20, 0.25);
+          setOp(slide1, s1Op);
+          if (slide1) slide1.classList.toggle('visible', s1Op > 0);
+
+          // Slide 2 (Notre Dame fire): fades in 25–31%, fades out 45–50%
+          var s2Op = slideOpacity(p, 0.25, 0.31, 0.45, 0.50);
           setOp(slide2, s2Op);
           if (slide2) slide2.classList.toggle('visible', s2Op > 0);
 
-          // Slide 1 text fill (5%–28%)
-          var f2 = rangeFade(p, 0.05, 0.28);
+          // Slide 2 text fill (27%–44%)
+          var f2 = rangeFade(p, 0.27, 0.44);
           if (s2line1) s2line1.style.backgroundSize = clamp(f2 / 0.35, 0, 1) * 100 + '% 100%';
           if (s2line2) s2line2.style.backgroundSize = clamp((f2 - 0.25) / 0.35, 0, 1) * 100 + '% 100%';
           if (s2line3) s2line3.style.backgroundSize = clamp((f2 - 0.50) / 0.40, 0, 1) * 100 + '% 100%';
 
-          // Slide 2 (Notre Dame rebuilt): fades in 33–39%, holds, fades out 55–60%
-          var s3Op = slideOpacity(p, 0.33, 0.39, 0.55, 0.60);
+          // Slide 3 (Notre Dame rebuilt): fades in 50–56%, fades out 65–70%
+          var s3Op = slideOpacity(p, 0.50, 0.56, 0.65, 0.70);
           setOp(slide3, s3Op);
           if (slide3) slide3.classList.toggle('visible', s3Op > 0);
 
-          // Slide 2 text fill (35%–54%)
-          var f3 = rangeFade(p, 0.35, 0.54);
+          // Slide 3 text fill (52%–66%)
+          var f3 = rangeFade(p, 0.52, 0.66);
           if (s3line1) s3line1.style.backgroundSize = clamp(f3 / 0.50, 0, 1) * 100 + '% 100%';
           if (s3line2) s3line2.style.backgroundSize = clamp((f3 - 0.40) / 0.45, 0, 1) * 100 + '% 100%';
 
-          // Slide 3 (60 Notre Dames): fades in 60–66%, holds, fades out 90–95%
-          var s4Op = slideOpacity(p, 0.60, 0.66, 0.90, 0.95);
+          // Slide 4 (60 Notre Dames): fades in 70–76%, fades out 90–95%
+          var s4Op = slideOpacity(p, 0.70, 0.76, 0.90, 0.95);
           setOp(slide4, s4Op);
           if (slide4) slide4.classList.toggle('visible', s4Op > 0);
 
-          // Slide 3 text fill (62%–86%)
-          var f4 = rangeFade(p, 0.62, 0.86);
+          // Slide 4 text fill (72%–88%)
+          var f4 = rangeFade(p, 0.72, 0.88);
           if (s4line1) s4line1.style.backgroundSize = clamp(f4 / 0.40, 0, 1) * 100 + '% 100%';
           if (s4line2) s4line2.style.backgroundSize = clamp((f4 - 0.30) / 0.35, 0, 1) * 100 + '% 100%';
           if (s4line3) s4line3.style.backgroundSize = clamp((f4 - 0.60) / 0.35, 0, 1) * 100 + '% 100%';
 
-          // Slide 3: reveal all icons at once when slide appears
+          // Slide 4: reveal all icons at once when slide appears
           if (ndIcons.length) {
             var iconsVisible = s4Op > 0.3;
             for (var i = 0; i < ndIcons.length; i++) {
