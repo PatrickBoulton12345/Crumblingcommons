@@ -321,14 +321,28 @@ data — stances will default to "unknown".
       transition: opacity 0.3s ease;
     }
 
+    .hero-intro-inner {
+      padding: 0 48px;
+      max-width: 700px;
+    }
+
     .hero-intro-heading {
       font-family: var(--font-octarine);
       font-weight: 700;
-      font-size: clamp(28px, 5.5vw, 56px);
+      font-size: clamp(32px, 6vw, 64px);
       line-height: 1.15;
+      text-transform: uppercase;
       color: #ffffff;
-      max-width: 600px;
-      padding: 0 48px;
+      margin-bottom: 8px;
+    }
+
+    .hero-intro-sub {
+      font-family: var(--font-octarine);
+      font-weight: 700;
+      font-size: clamp(32px, 6vw, 64px);
+      line-height: 1.15;
+      text-transform: uppercase;
+      color: var(--accent-red);
     }
 
     .scroll-cue {
@@ -392,6 +406,23 @@ data — stances will default to "unknown".
       text-transform: uppercase;
       color: #222;
       background-image: linear-gradient(to right, #ffffff, #ffffff);
+      background-repeat: no-repeat;
+      background-size: 0% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      max-width: 600px;
+    }
+
+    .scroll-reveal-bill {
+      font-family: var(--font-octarine);
+      font-weight: 700;
+      font-size: clamp(24px, 4vw, 40px);
+      line-height: 1.15;
+      text-transform: uppercase;
+      margin-top: 16px;
+      color: #222;
+      background-image: linear-gradient(to right, var(--accent-red), var(--accent-red));
       background-repeat: no-repeat;
       background-size: 0% 100%;
       -webkit-background-clip: text;
@@ -1016,7 +1047,7 @@ data — stances will default to "unknown".
         );
       }
 
-      .hero-intro-heading { padding: 0 24px; }
+      .hero-intro-inner { padding: 0 24px; }
       .scroll-cue { bottom: 24px; }
 
       /* Slide text size overrides for mobile */
@@ -1099,7 +1130,10 @@ data — stances will default to "unknown".
 
       <!-- ── HERO INTRO (visible before scrolling) ── -->
       <div class="hero-intro" id="hero-intro">
-        <h1 class="hero-intro-heading">We have a bill to change this.</h1>
+        <div class="hero-intro-inner">
+          <h1 class="hero-intro-heading">Parliament is crumbling.</h1>
+          <p class="hero-intro-sub">It might cost &pound;39bn to repair.</p>
+        </div>
         <div class="scroll-cue" aria-hidden="true">
           <span class="scroll-cue-text">Scroll</span>
           <svg class="scroll-cue-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
@@ -1112,6 +1146,7 @@ data — stances will default to "unknown".
           <div class="scroll-reveal-line" id="reveal-line-1">Parliament is crumbling.</div>
           <div class="scroll-reveal-line line-cost" id="reveal-line-2">It might cost £39bn to repair.</div>
           <div class="scroll-reveal-response" id="reveal-line-3">We don't think so.</div>
+          <div class="scroll-reveal-bill" id="reveal-line-4">We have a bill to change this.</div>
         </div>
       </div>
 
@@ -1921,6 +1956,7 @@ data — stances will default to "unknown".
     var revealLine1  = document.getElementById('reveal-line-1');
     var revealLine2  = document.getElementById('reveal-line-2');
     var revealLine3  = document.getElementById('reveal-line-3');
+    var revealLine4  = document.getElementById('reveal-line-4');
 
     // Slide 2 fill lines
     var s2line1 = document.getElementById('s2-line1');
@@ -2030,6 +2066,7 @@ data — stances will default to "unknown".
           if (revealLine1) revealLine1.style.backgroundSize = clamp(fillBase / 0.45, 0, 1) * 100 + '% 100%';
           if (revealLine2) revealLine2.style.backgroundSize = clamp((fillBase - 0.30) / 0.35, 0, 1) * 100 + '% 100%';
           if (revealLine3) revealLine3.style.backgroundSize = clamp((fillBase - 0.55) / 0.35, 0, 1) * 100 + '% 100%';
+          if (revealLine4) revealLine4.style.backgroundSize = clamp((fillBase - 0.80) / 0.20, 0, 1) * 100 + '% 100%';
 
           // Slide 2: fades in 25–31%, holds, fades out 45–52%
           var s2Op = slideOpacity(p, 0.25, 0.31, 0.45, 0.52);
