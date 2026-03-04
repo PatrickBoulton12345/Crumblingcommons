@@ -1306,16 +1306,7 @@ data — stances will default to "unknown".
     if (!geoLayer) return;
     geoLayer.eachLayer(function(layer) {
       layer.setStyle(featureStyle(layer.feature));
-      // Rebuild tooltip with fresh data
-      const props = layer.feature.properties;
-      const name  = props.PCON24NM;
-      const data  = getMPByName(name);
       layer.unbindTooltip();
-      layer.bindTooltip(buildTooltipHTML(name, data), {
-        sticky: true,
-        opacity: 1,
-        className: 'cc-tooltip-wrapper',
-      });
     });
   }
 
