@@ -987,9 +987,9 @@ data — stances will default to "unknown".
     Demo Mode — Parliament API unavailable. Showing sample data only.
   </div>
 
-  <!-- Skip to bottom button -->
-  <button class="skip-to-bottom" id="skip-to-bottom" aria-label="Skip to newsletter signup" onclick="document.getElementById('newsletter').scrollIntoView({behavior:'smooth'})">
-    <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+  <!-- Scroll to intro button -->
+  <button class="skip-to-bottom" id="skip-to-top-btn" aria-label="Go to top" onclick="document.getElementById('intro-statement').scrollIntoView({behavior:'smooth'})">
+    <svg viewBox="0 0 24 24"><polyline points="6 15 12 9 18 15"/></svg>
   </button>
 
   <!-- ===== 5-SLIDE SCROLL STORY ===== -->
@@ -1731,14 +1731,15 @@ data — stances will default to "unknown".
     // Load Parliament API data + Sheet stances in parallel with map init
     loadAllData();
 
-    // Hide skip-to-bottom button when newsletter is in view
-    var skipBtn = document.getElementById('skip-to-bottom');
-    var nlSection = document.getElementById('newsletter');
-    if (skipBtn && nlSection) {
+    // Show scroll-to-top button only when user has scrolled past intro
+    var skipBtn = document.getElementById('skip-to-top-btn');
+    var introSection = document.getElementById('intro-statement');
+    if (skipBtn && introSection) {
+      skipBtn.classList.add('hidden');
       var obs = new IntersectionObserver(function(entries) {
         skipBtn.classList.toggle('hidden', entries[0].isIntersecting);
       }, { threshold: 0.1 });
-      obs.observe(nlSection);
+      obs.observe(introSection);
     }
 
     // ===== SCROLL: HERO FADE =====
