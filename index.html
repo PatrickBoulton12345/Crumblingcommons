@@ -1108,32 +1108,6 @@ data — stances will default to "unknown".
     </div>
   </section>
 
-  <!-- ===== NEWSLETTER ===== -->
-  <section id="newsletter" aria-label="Newsletter signup">
-    <div class="container">
-      <div class="newsletter-inner">
-        <p class="section-label">Stay informed</p>
-        <h2>Updates on the campaign</h2>
-        <p>We'll send you updates when MPs change their position and when votes are scheduled.</p>
-        <form class="newsletter-form" id="newsletter-form" novalidate>
-          <label for="email-input" class="sr-only">Your email address</label>
-          <input
-            type="email"
-            id="email-input"
-            name="email"
-            placeholder="your@email.com"
-            autocomplete="email"
-            aria-label="Email address"
-            required
-          />
-          <button type="submit" id="newsletter-btn" aria-label="Subscribe for updates">
-            Stay informed
-          </button>
-        </form>
-        <p id="newsletter-confirmation" aria-live="polite" role="status"></p>
-      </div>
-    </div>
-  </section>
 
   <!-- ===== FOOTER ===== -->
   <footer role="contentinfo">
@@ -1687,28 +1661,6 @@ data — stances will default to "unknown".
     lookupPostcode(document.getElementById('postcode-input').value);
   });
 
-  document.getElementById('newsletter-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const email   = document.getElementById('email-input').value.trim();
-    const confirm = document.getElementById('newsletter-confirmation');
-    const btn     = document.getElementById('newsletter-btn');
-
-    if (!email || !email.includes('@')) {
-      confirm.style.color   = '#e74c3c';
-      confirm.style.display = 'block';
-      confirm.textContent   = 'Please enter a valid email address.';
-      return;
-    }
-
-    // TODO: Wire up newsletter webhook — POST email to your webhook URL here
-    console.log('Newsletter signup:', email);
-
-    confirm.style.color   = '#4CAF50';
-    confirm.style.display = 'block';
-    confirm.textContent   = 'Thank you for signing up. We will be in touch.';
-    btn.disabled          = true;
-    document.getElementById('email-input').value = '';
-  });
 
   // ============================================================
   // INITIALISE ON DOM READY
