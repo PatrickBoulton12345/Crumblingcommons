@@ -283,6 +283,29 @@ data — stances will default to "unknown".
     }
 
 
+    /* ===== SKIP TO BOTTOM BUTTON ===== */
+    .skip-to-bottom {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 900;
+      background: var(--accent-red);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+      transition: opacity 0.3s, transform 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .skip-to-bottom:hover { transform: scale(1.1); }
+    .skip-to-bottom.hidden { opacity: 0; pointer-events: none; }
+    .skip-to-bottom svg { width: 22px; height: 22px; fill: none; stroke: #fff; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
     /* ===== STAT COUNTER ===== */
     #stats {
       background: var(--bg-section);
@@ -867,6 +890,11 @@ data — stances will default to "unknown".
     Demo Mode — Parliament API unavailable. Showing sample data only.
   </div>
 
+
+  <!-- Skip to bottom button -->
+  <button class="skip-to-bottom" id="skip-to-bottom" aria-label="Skip to newsletter signup" onclick="document.getElementById('newsletter').scrollIntoView({behavior:'smooth'})">
+    <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+  </button>
 
   <!-- ===== STAT COUNTER ===== -->
   <section id="stats" aria-label="MP support statistics">
@@ -1787,6 +1815,16 @@ data — stances will default to "unknown".
 
     // Load Parliament API data + Sheet stances in parallel with map init
     loadAllData();
+
+    // Hide skip-to-bottom button when newsletter is in view
+    var skipBtn = document.getElementById('skip-to-bottom');
+    var nlSection = document.getElementById('newsletter');
+    if (skipBtn && nlSection) {
+      var obs = new IntersectionObserver(function(entries) {
+        skipBtn.classList.toggle('hidden', entries[0].isIntersecting);
+      }, { threshold: 0.1 });
+      obs.observe(nlSection);
+    }
 
   });
 
