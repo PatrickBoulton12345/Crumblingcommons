@@ -925,64 +925,6 @@ data — stances will default to "unknown".
     }
     .leaflet-tooltip::before { display: none; }
 
-    /* ===== KEY FACTS ===== */
-    #facts {
-      background: var(--bg-section);
-      border-top: 1px solid var(--border);
-    }
-
-    #facts h2 {
-      font-family: var(--font-serif);
-      font-size: clamp(24px, 4vw, 34px);
-      font-weight: 700;
-      margin-bottom: 10px;
-    }
-
-    #facts .section-intro {
-      color: #aaaaaa;
-      font-size: 15px;
-      margin-bottom: 48px;
-      max-width: 560px;
-    }
-
-    .facts-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 24px;
-    }
-
-    .fact-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-left: 3px solid var(--accent-red);
-      border-radius: 2px;
-      padding: 28px 24px;
-    }
-
-    .fact-stat {
-      font-family: var(--font-serif);
-      font-size: clamp(30px, 5vw, 42px);
-      font-weight: 700;
-      color: var(--accent-red);
-      line-height: 1;
-      margin-bottom: 10px;
-    }
-
-    .fact-label {
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 10px;
-    }
-
-    .fact-desc {
-      font-size: 14px;
-      color: #cccccc;
-      line-height: 1.6;
-    }
-
     /* ===== NEWSLETTER ===== */
     #newsletter {
       background: var(--bg-main);
@@ -1141,7 +1083,7 @@ data — stances will default to "unknown".
 
       #map-container { height: 400px; }
 
-      .facts-grid { grid-template-columns: 1fr; }
+
 
       .newsletter-form {
         flex-direction: column;
@@ -1356,89 +1298,6 @@ data — stances will default to "unknown".
       <div id="map" aria-hidden="true"></div>
     </div>
   </section>
-
-  <!-- ===== KEY FACTS ===== -->
-  <!-- KEY FACTS — REPLACE PLACEHOLDER CONTENT -->
-  <section id="facts" aria-label="Key facts about Palace of Westminster restoration">
-    <div class="container">
-      <p class="section-label">Why it matters</p>
-      <h2>The building is failing.</h2>
-      <p class="section-intro">
-        The Palace of Westminster is in an advanced state of decay. These are the facts.
-        <!-- PLACEHOLDER INTRO — replace with verified copy -->
-      </p>
-      <div class="facts-grid">
-
-        <!-- FACT 1 — REPLACE PLACEHOLDER -->
-        <div class="fact-card">
-          <div class="fact-stat">40,000+</div>
-          <div class="fact-label">Building failures recorded</div>
-          <p class="fact-desc">
-            Over 40,000 separate incidents of building failures have been recorded since 2017,
-            including electrical faults, water ingress, and structural deterioration.
-            <!-- SOURCE NEEDED — replace with verified figure -->
-          </p>
-        </div>
-
-        <!-- FACT 2 — REPLACE PLACEHOLDER -->
-        <div class="fact-card">
-          <div class="fact-stat">100+</div>
-          <div class="fact-label">Years of deferred maintenance</div>
-          <p class="fact-desc">
-            The building has received only reactive, piecemeal maintenance for over a century.
-            Core systems — including Victorian-era pipes and wiring — are far beyond their design lifespan.
-            <!-- SOURCE NEEDED — replace with verified figure -->
-          </p>
-        </div>
-
-        <!-- FACT 3 — REPLACE PLACEHOLDER -->
-        <div class="fact-card">
-          <div class="fact-stat">High</div>
-          <div class="fact-label">Fire risk rating</div>
-          <p class="fact-desc">
-            The Palace faces a constant and significant risk of catastrophic fire. Asbestos and outdated
-            building materials are present throughout large sections of the estate.
-            <!-- SOURCE NEEDED — add specific % / quote from official report -->
-          </p>
-        </div>
-
-        <!-- FACT 4 — REPLACE PLACEHOLDER -->
-        <div class="fact-card">
-          <div class="fact-stat">&pound;[X]m</div>
-          <div class="fact-label">Additional cost per year of delay</div>
-          <p class="fact-desc">
-            Every year Parliament delays a decision on full restoration, the estimated cost of the
-            eventual works increases by hundreds of millions of pounds.
-            <!-- SOURCE NEEDED — add specific annual delay cost figure -->
-          </p>
-        </div>
-
-        <!-- FACT 5 — REPLACE PLACEHOLDER -->
-        <div class="fact-card">
-          <div class="fact-stat">1834</div>
-          <div class="fact-label">Last major fire</div>
-          <p class="fact-desc">
-            The previous Palace of Westminster burned down in 1834. The current Victorian building
-            has never undergone comprehensive structural restoration in its 185-year history.
-            <!-- SOURCE NEEDED — verify date and framing -->
-          </p>
-        </div>
-
-        <!-- FACT 6 — REPLACE PLACEHOLDER -->
-        <div class="fact-card">
-          <div class="fact-stat">2031+</div>
-          <div class="fact-label">Earliest possible completion</div>
-          <p class="fact-desc">
-            Even if Parliament voted today to proceed with a full restoration programme, the earliest
-            projected completion date is well into the next decade — and rising.
-            <!-- SOURCE NEEDED — verify timeline figure -->
-          </p>
-        </div>
-
-      </div>
-    </div>
-  </section>
-  <!-- END KEY FACTS -->
 
   <!-- ===== NEWSLETTER ===== -->
   <section id="newsletter" aria-label="Newsletter signup">
