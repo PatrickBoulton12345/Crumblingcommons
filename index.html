@@ -395,6 +395,52 @@ data — stances will default to "unknown".
     .skip-to-bottom.hidden { opacity: 0; pointer-events: none; }
     .skip-to-bottom svg { width: 22px; height: 22px; fill: none; stroke: #fff; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
 
+    /* ===== COST COMPARISON CARDS ===== */
+    .cost-cards {
+      display: flex;
+      gap: 40px;
+      justify-content: center;
+      margin-top: 32px;
+      max-width: 900px;
+    }
+
+    .cost-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      flex: 1;
+      max-width: 260px;
+    }
+
+    .cost-icon svg {
+      width: 56px;
+      height: 56px;
+      stroke: var(--accent-red);
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .cost-number {
+      font-family: var(--font-octarine);
+      font-weight: 700;
+      font-size: clamp(32px, 6vw, 52px);
+      color: var(--accent-red);
+      margin-top: 16px;
+      line-height: 1.1;
+    }
+
+    .cost-label {
+      font-family: var(--font-octarine);
+      font-weight: 300;
+      font-size: 15px;
+      color: rgba(255, 255, 255, 0.8);
+      margin-top: 8px;
+      line-height: 1.4;
+    }
+
     /* ===== STAT COUNTER ===== */
     #stats {
       background: var(--bg-section);
@@ -963,6 +1009,12 @@ data — stances will default to "unknown".
 
       .write-btn { width: 100%; text-align: center; }
 
+      .cost-cards {
+        flex-direction: column;
+        align-items: center;
+        gap: 32px;
+      }
+
       #map-container { height: 400px; }
 
 
@@ -1024,11 +1076,29 @@ data — stances will default to "unknown".
       <div class="slide-heading" style="color:#ffffff; font-size:clamp(22px,4vw,38px);">Parliament must be restored. It could cost <span style="color:var(--accent-red);">&pound;39bn</span> and take <span style="color:var(--accent-red);">61 years</span>.</div>
       <div class="slide-subheading" style="margin-top:24px; font-size:clamp(16px,2.5vw,22px);">This isn&rsquo;t acceptable. France restored Notre Dame after a devastating fire in five years, and for &euro;700 million. Why can&rsquo;t we do the same?<br><br>We have a bill. It will streamline the planning process significantly and reduce time and cost.</div>
       <div class="slide-heading" style="color:#ffffff; font-size:clamp(22px,4vw,38px); margin-top:48px;">Here&rsquo;s what the current plan <span style="color:var(--accent-red);">actually</span> costs.</div>
-      <ul style="list-style:disc; padding-left:24px; margin-top:24px; font-family:var(--font-octarine); font-size:clamp(16px,2.5vw,22px); color:rgba(255,255,255,0.9); line-height:1.8;">
-        <li><span style="color:var(--accent-red); font-weight:700;">1.25 million</span> starting-salary police constables.*</li>
-        <li><span style="color:var(--accent-red); font-weight:700;">1.18 million</span> starting-salary teachers.*</li>
-        <li><span style="color:var(--accent-red); font-weight:700;">8&ndash;9</span> hospital schemes.*</li>
-      </ul>
+      <div class="cost-cards" id="cost-cards">
+        <div class="cost-card">
+          <div class="cost-icon">
+            <svg viewBox="0 0 48 48"><path d="M24 4L6 14v4h36v-4L24 4z"/><rect x="10" y="20" width="4" height="16"/><rect x="22" y="20" width="4" height="16"/><rect x="34" y="20" width="4" height="16"/><rect x="4" y="38" width="40" height="4" rx="1"/><circle cx="24" cy="11" r="2"/></svg>
+          </div>
+          <div class="cost-number" data-target="1.25" data-suffix=" million" data-decimals="2">0</div>
+          <div class="cost-label">starting-salary<br>police constables*</div>
+        </div>
+        <div class="cost-card">
+          <div class="cost-icon">
+            <svg viewBox="0 0 48 48"><path d="M12 22L24 10l12 12"/><rect x="8" y="22" width="32" height="4"/><path d="M14 26v14h8v-10h4v10h8V26"/><circle cx="24" cy="16" r="3"/></svg>
+          </div>
+          <div class="cost-number" data-target="1.18" data-suffix=" million" data-decimals="2">0</div>
+          <div class="cost-label">starting-salary<br>teachers*</div>
+        </div>
+        <div class="cost-card">
+          <div class="cost-icon">
+            <svg viewBox="0 0 48 48"><rect x="8" y="14" width="32" height="28" rx="2"/><rect x="20" y="8" width="8" height="6"/><rect x="22" y="20" width="4" height="10"/><rect x="18" y="24" width="12" height="2"/><rect x="14" y="34" width="6" height="8"/><rect x="28" y="34" width="6" height="8"/></svg>
+          </div>
+          <div class="cost-number" data-target="9" data-display-final="8&ndash;9" data-decimals="0">0</div>
+          <div class="cost-label">hospital<br>schemes*</div>
+        </div>
+      </div>
       <p style="margin-top:16px; font-family:var(--font-octarine); font-size:13px; color:var(--text-muted);">* This is assuming salary only.</p>
       <div class="slide-heading" style="color:#ffffff; font-size:clamp(22px,4vw,38px); margin-top:24px;">We have a <span style="color:var(--accent-red);">bill</span>.</div>
     </div>
@@ -1691,6 +1761,44 @@ data — stances will default to "unknown".
     // Load Parliament API data + Sheet stances in parallel with map init
     loadAllData();
 
+    // ===== COST CARDS COUNT-UP =====
+    var costCards = document.getElementById('cost-cards');
+    if (costCards) {
+      var counted = false;
+      var costObs = new IntersectionObserver(function(entries) {
+        if (entries[0].isIntersecting && !counted) {
+          counted = true;
+          costObs.disconnect();
+          var numbers = costCards.querySelectorAll('.cost-number[data-target]');
+          numbers.forEach(function(el) {
+            var target = parseFloat(el.getAttribute('data-target'));
+            var decimals = parseInt(el.getAttribute('data-decimals')) || 0;
+            var suffix = el.getAttribute('data-suffix') || '';
+            var displayFinal = el.getAttribute('data-display-final');
+            var duration = 2000;
+            var start = performance.now();
+            function easeOut(t) { return t * (2 - t); }
+            function tick(now) {
+              var elapsed = now - start;
+              var progress = Math.min(elapsed / duration, 1);
+              var value = target * easeOut(progress);
+              if (progress < 1) {
+                el.textContent = value.toFixed(decimals) + suffix;
+                requestAnimationFrame(tick);
+              } else {
+                if (displayFinal) {
+                  el.innerHTML = displayFinal;
+                } else {
+                  el.textContent = target.toFixed(decimals) + suffix;
+                }
+              }
+            }
+            requestAnimationFrame(tick);
+          });
+        }
+      }, { threshold: 0.3 });
+      costObs.observe(costCards);
+    }
 
     // ===== SCROLL: HERO FADE =====
     var heroWrapper  = document.getElementById('hero-wrapper');
