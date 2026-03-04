@@ -1,0 +1,213 @@
+<!--
+  BACKUP: Notre Dame slides (2, 3, 4) removed from index.html
+  To restore, add the HTML back into the <header id="hero"> section,
+  the CSS into the <style> block, and the JS into the scroll handler.
+-->
+
+<!-- ============================================================ -->
+<!-- HTML: SLIDE 2 — Notre Dame Fire                              -->
+<!-- ============================================================ -->
+<!-- Background image: notre-dame-fire.jpg -->
+
+<div class="slide-content" id="slide-2-content" aria-label="Notre Dame fire slide">
+  <div class="slide-inner">
+    <div class="slide-heading text-fill-red" id="s2-line1">In 2019, Notre Dame burned.</div>
+    <div class="slide-heading text-fill-red" id="s2-line2">France was shocked.</div>
+    <span class="slide-gap"></span>
+    <div class="slide-subheading text-fill-white" id="s2-line3">
+      The President of France promised to rebuild it within five years.
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- HTML: SLIDE 3 — Notre Dame Rebuilt                           -->
+<!-- ============================================================ -->
+
+<div class="slide-content" id="slide-3-content" aria-label="Notre Dame rebuilt slide">
+  <div class="slide-inner">
+    <div class="slide-stat text-fill-white" id="s3-line1">Five years later, Notre Dame stands tall.</div>
+    <span class="slide-gap"></span>
+    <span class="slide-number text-fill-red" id="s3-line2">It cost &euro;700 million.</span>
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- HTML: SLIDE 4 — 60 Notre Dames                               -->
+<!-- ============================================================ -->
+
+<div class="slide-content" id="slide-4-content" aria-label="Cost comparison slide">
+  <div class="slide-inner">
+    <div class="slide-subheading text-fill-white" id="s4-line1">
+      Based on the current estimate of &pound;39 billion, France could have built&hellip;
+    </div>
+    <span class="slide-gap"></span>
+    <span class="slide-number text-fill-red" id="s4-line2" style="font-size: clamp(60px, 10vw, 100px);">60 Notre Dames.</span>
+    <div class="slide-subheading text-fill-white" id="s4-line3" style="margin-top: 12px;">For <u>one</u> Parliament.</div>
+    <!-- Grid of 60 icons injected by JS -->
+    <div class="notre-dame-grid" id="notre-dame-grid" aria-hidden="true"></div>
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- HTML: BACKGROUND LAYERS (for slides 2-4)                     -->
+<!-- ============================================================ -->
+
+<!-- Slide 2: Notre Dame fire -->
+<img class="slide-bg" id="bg-fire" src="notre-dame-fire.jpg" alt="" role="presentation" />
+<!-- Slides 3-4: dark background -->
+<div class="slide-bg slide-bg-dark" id="bg-dark"></div>
+
+
+<!-- ============================================================ -->
+<!-- CSS: Text fill effect (used by slides 2-4)                   -->
+<!-- ============================================================ -->
+<style>
+    .text-fill-red,
+    .text-fill-white {
+      color: #222;
+      background-repeat: no-repeat;
+      background-size: 0% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .text-fill-red {
+      background-image: linear-gradient(to right, var(--accent-red), var(--accent-red));
+    }
+
+    .text-fill-white {
+      background-image: linear-gradient(to right, #ffffff, #ffffff);
+    }
+
+    .slide-gap {
+      display: block;
+      height: 24px;
+    }
+
+    .notre-dame-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 32px;
+      max-width: 560px;
+    }
+
+    .notre-dame-grid img {
+      width: 44px;
+      height: 44px;
+      opacity: 0;
+      transform: scale(0.5);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    .notre-dame-grid img.revealed {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .slide-bg-dark {
+      background: #0d0d0d;
+    }
+</style>
+
+
+<!-- ============================================================ -->
+<!-- JS: Scroll handler variables and logic for slides 2-4        -->
+<!-- ============================================================ -->
+<script>
+    // --- Variables ---
+
+    var bgFire       = document.getElementById('bg-fire');
+    var bgDark       = document.getElementById('bg-dark');
+
+    var slide2       = document.getElementById('slide-2-content');
+    var slide3       = document.getElementById('slide-3-content');
+    var slide4       = document.getElementById('slide-4-content');
+
+    // Slide 2 (Notre Dame fire) fill lines
+    var s2line1 = document.getElementById('s2-line1');
+    var s2line2 = document.getElementById('s2-line2');
+    var s2line3 = document.getElementById('s2-line3');
+
+    // Slide 3 (Notre Dame rebuilt) fill lines
+    var s3line1 = document.getElementById('s3-line1');
+    var s3line2 = document.getElementById('s3-line2');
+
+    // Slide 4 (60 Notre Dames) fill lines
+    var s4line1 = document.getElementById('s4-line1');
+    var s4line2 = document.getElementById('s4-line2');
+    var s4line3 = document.getElementById('s4-line3');
+
+    // Slide 4 icons (built by Notre Dame icon grid JS)
+    var ndIcons = gridEl ? gridEl.querySelectorAll('img') : [];
+
+    // --- Notre Dame icon grid builder (60 icons) ---
+    // var gridEl = document.getElementById('notre-dame-grid');
+    // if (gridEl) {
+    //   var iconFragment = document.createDocumentFragment();
+    //   for (var i = 0; i < 60; i++) {
+    //     var img = document.createElement('img');
+    //     img.src = 'notre-dame-icon.png';
+    //     img.alt = '';
+    //     img.setAttribute('role', 'presentation');
+    //     img.style.transitionDelay = (i * 0.018) + 's';
+    //     iconFragment.appendChild(img);
+    //   }
+    //   gridEl.appendChild(iconFragment);
+    // }
+
+    // --- Scroll logic (inside the onScroll requestAnimationFrame callback) ---
+    // These used a 4-slide layout with hero-wrapper height: 560vh
+    // Slide boundaries: 1: 0-0.25, 2: 0.25-0.50, 3: 0.50-0.70, 4: 0.70-0.95
+
+    // Notre Dame fire bg: fades in 22–28%, fades out 45–52%
+    // setOp(bgFire, slideOpacity(p, 0.22, 0.28, 0.45, 0.52));
+
+    // Dark bg: fades in 45–52%, holds for slides 3-4, fades out at end
+    // setOp(bgDark, slideOpacity(p, 0.45, 0.52, 0.93, 0.98));
+
+    // Overlay: lighter on dark-bg slides
+    // var overlayOnDark = p >= 0.52 && p <= 0.93;
+    // heroOverlay.style.background = overlayOnDark
+    //   ? 'rgba(0,0,0,0.35)'
+    //   : 'linear-gradient(to right, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.70) 40%, rgba(0,0,0,0.20) 100%)';
+
+    // Slide 2 (Notre Dame fire): fades in 25–31%, fades out 45–50%
+    // var s2Op = slideOpacity(p, 0.25, 0.31, 0.45, 0.50);
+    // setOp(slide2, s2Op);
+    // if (slide2) slide2.classList.toggle('visible', s2Op > 0);
+    // var f2 = rangeFade(p, 0.27, 0.44);
+    // if (s2line1) s2line1.style.backgroundSize = clamp(f2 / 0.35, 0, 1) * 100 + '% 100%';
+    // if (s2line2) s2line2.style.backgroundSize = clamp((f2 - 0.25) / 0.35, 0, 1) * 100 + '% 100%';
+    // if (s2line3) s2line3.style.backgroundSize = clamp((f2 - 0.50) / 0.40, 0, 1) * 100 + '% 100%';
+
+    // Slide 3 (Notre Dame rebuilt): fades in 50–56%, fades out 65–70%
+    // var s3Op = slideOpacity(p, 0.50, 0.56, 0.65, 0.70);
+    // setOp(slide3, s3Op);
+    // if (slide3) slide3.classList.toggle('visible', s3Op > 0);
+    // var f3 = rangeFade(p, 0.52, 0.66);
+    // if (s3line1) s3line1.style.backgroundSize = clamp(f3 / 0.50, 0, 1) * 100 + '% 100%';
+    // if (s3line2) s3line2.style.backgroundSize = clamp((f3 - 0.40) / 0.45, 0, 1) * 100 + '% 100%';
+
+    // Slide 4 (60 Notre Dames): fades in 70–76%, fades out 90–95%
+    // var s4Op = slideOpacity(p, 0.70, 0.76, 0.90, 0.95);
+    // setOp(slide4, s4Op);
+    // if (slide4) slide4.classList.toggle('visible', s4Op > 0);
+    // var f4 = rangeFade(p, 0.72, 0.88);
+    // if (s4line1) s4line1.style.backgroundSize = clamp(f4 / 0.40, 0, 1) * 100 + '% 100%';
+    // if (s4line2) s4line2.style.backgroundSize = clamp((f4 - 0.30) / 0.35, 0, 1) * 100 + '% 100%';
+    // if (s4line3) s4line3.style.backgroundSize = clamp((f4 - 0.60) / 0.35, 0, 1) * 100 + '% 100%';
+
+    // Slide 4: reveal all icons at once when slide appears
+    // if (ndIcons.length) {
+    //   var iconsVisible = s4Op > 0.3;
+    //   for (var i = 0; i < ndIcons.length; i++) {
+    //     ndIcons[i].classList.toggle('revealed', iconsVisible);
+    //   }
+    // }
+</script>
