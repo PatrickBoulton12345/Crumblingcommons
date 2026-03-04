@@ -1504,7 +1504,10 @@ data — stances will default to "unknown".
 
     // Update stats and re-colour map
     updateStats();
-    if (geoLayer) applyMapColouring();
+    applyMapColouring();
+    // If the map hasn't finished loading yet, flag that data is ready
+    // so initMap can apply colouring when geoLayer is created
+    window._dataReady = true;
   }
 
   // ============================================================
@@ -1721,6 +1724,9 @@ data — stances will default to "unknown".
     // Hide map loading overlay
     document.getElementById('loading-overlay').style.display = 'none';
     map.invalidateSize();
+
+    // If data loaded before map, re-colour now
+    if (window._dataReady) applyMapColouring();
   }
 
   // ============================================================
